@@ -32,14 +32,10 @@
           mode: Phaser.Scale.RESIZE,
           autoCenter: Phaser.Scale.CENTER_BOTH,
         },
-        scene: [BootScene, PuzzleScene,FullscreenPrompt],
+        scene: [AssetsLoad, PuzzleScene,FullscreenPrompt],
       };
 
       const game = new Phaser.Game(config);
-
-      // window.onload = () => {
-      //   game.scene.start("BootScene");
-      // };
     </script>
   </body>
 </html>

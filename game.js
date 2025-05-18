@@ -1,123 +1,189 @@
-let tileCount = 7;
+let tileCount = 7; // count of tiles
 let tileHeight, tileWidth;
-let tiles = [];
+let tiles = []; // for store texture keys
 let tileSprites = [];
 
-class BootScene extends Phaser.Scene {
+class AssetsLoad extends Phaser.Scene {
   constructor() {
-    super({ key: "BootScene" });
+    super({ key: "AssetsLoad" });
   }
 
   preload() {
-    for (let i = 1; i <= 6; i++) {
-      this.load.image(`bg${i}`, `./assets/BG_0${i}.${i === 3 || i === 5 ? 'png' : 'jpg'}`);
-    }
+    // Load all images for game
+    this.load.image("bg1", "/assets/BG_01.jpg");
+    this.load.image("bg2", "/assets/BG_02.jpg");
+    this.load.image("bg3", "/assets/BG_03.png");
+    this.load.image("bg4", "/assets/BG_04.jpg");
+    this.load.image("bg5", "/assets/BG_05.png");
+    this.load.image("bg6", "/assets/BG_06.jpg");
     this.load.image("background", "./assets/start.jpg");
     this.load.image("back", "./assets/bk.jpg");
-    this.load.image("startBtn", "./assets/startBtn.jpeg");
+    this.load.image("startBtn", "./assets/startBtn.png");
   }
 
   create() {
-    this.selectedKey = "bg1"; // Default selection
+    this.selectedKey = "bg1"; //Set  default image
 
-    const bg = this.add.image(this.scale.width / 2, this.scale.height / 2, "background")
+    //Bg image
+    const bg = this.add
+      .image(this.scale.width / 2, this.scale.height / 2, "background")
       .setOrigin(0.5)
       .setDisplaySize(this.scale.width, this.scale.height);
 
-    // Store image options
-    this.thumbnails = [
-      { key: "bg1", x: this.scale.width / 2 - 420, y: 100 },
-      { key: "bg2", x: this.scale.width / 2, y: 100 },
-      { key: "bg3", x: this.scale.width / 2 + 420, y: 100 },
-      { key: "bg4", x: this.scale.width / 2 - 420, y: 370 },
-      { key: "bg5", x: this.scale.width / 2, y: 370 },
-      { key: "bg6", x: this.scale.width / 2 + 420, y: 370 }
+    //
+    const bg1 = this.add
+      .image(this.scale.width / 2 - 420, 100, "bg1")
+      .setOrigin(0.5, 0)
+      .setDisplaySize(350, 200)
+      .setInteractive({ useHandCursor: true })
+      .on("pointerdown", () => {
+        this.selectedKey = "bg1";
+        this.updateSelection(); // This function use for add or remove color layer above th selected image
+      });
+
+    const bg2 = this.add
+      .image(this.scale.width / 2, 100, "bg2")
+      .setOrigin(0.5, 0)
+      .setDisplaySize(350, 200)
+      .setInteractive({ useHandCursor: true })
+      .on("pointerdown", () => {
+        this.selectedKey = "bg2";
+        this.updateSelection();
+      });
+
+    const bg3 = this.add
+      .image(this.scale.width / 2 + 420, 100, "bg3")
+      .setOrigin(0.5, 0)
+      .setDisplaySize(350, 200)
+      .setInteractive({ useHandCursor: true })
+      .on("pointerdown", () => {
+        this.selectedKey = "bg3";
+        this.updateSelection();
+      });
+
+    const bg4 = this.add
+      .image(this.scale.width / 2 - 420, 330, "bg4")
+      .setOrigin(0.5, 0)
+      .setDisplaySize(350, 200)
+      .setInteractive({ useHandCursor: true })
+      .on("pointerdown", () => {
+        this.selectedKey = "bg4";
+        this.updateSelection();
+      });
+
+    const bg5 = this.add
+      .image(this.scale.width / 2, 330, "bg5")
+      .setOrigin(0.5, 0)
+      .setDisplaySize(350, 200)
+      .setInteractive({ useHandCursor: true })
+      .on("pointerdown", () => {
+        this.selectedKey = "bg5";
+        this.updateSelection();
+      });
+
+    const bg6 = this.add
+      .image(this.scale.width / 2 + 420, 330, "bg6")
+      .setOrigin(0.5, 0)
+      .setDisplaySize(350, 200)
+      .setInteractive({ useHandCursor: true })
+      .on("pointerdown", () => {
+        this.selectedKey = "bg6";
+        this.updateSelection();
+      });
+
+    // Store references for selection highlighting
+    this.selectableImages = [
+      { image: bg1, key: "bg1" },
+      { image: bg2, key: "bg2" },
+      { image: bg3, key: "bg3" },
+      { image: bg4, key: "bg4" },
+      { image: bg5, key: "bg5" },
+      { image: bg6, key: "bg6" },
     ];
 
-    // Create all image thumbnails
-    this.thumbnails.forEach((thumb) => {
-      const image = this.add.image(thumb.x, thumb.y, thumb.key)
-        .setOrigin(0.5, 0)
-        .setDisplaySize(350, 200)
-        .setInteractive({ useHandCursor: true })
-        .on("pointerdown", () => {
-          this.selectedKey = thumb.key;
-          updateTints();
-        });
+    this.updateSelection(); // Add layer on selected image 
 
-      thumb.image = image; // Save reference
-    });
-
-    // Function to update tints
-    const updateTints = () => {
-      this.thumbnails.forEach((thumb) => {
-        if (thumb.key === this.selectedKey) {
-          thumb.image.setTint(0xffff00); // yellow tint for selected
-        } else {
-          thumb.image.clearTint(); // no tint for others
-        }
-      });
-    };
-
-    // Initially tint the default selected image
-    updateTints();
-
-    // Add instruction text
     this.add.text(this.scale.width / 2, 20, "Choose Any Image And Start the Game.", {
-      font: "35px bungee shade",
-      fill: "red",
-      fontStyle: 400,
-    }).setOrigin(0.5, 0);
+        font: "35px bungee shade",
+        fill: "red",
+        fontStyle: 400,
+      })
+      .setOrigin(0.5, 0);
 
-    // Start button
-    const startButton = this.add.image(this.scale.width / 2, 670, "startBtn")
+   
+    const startButton = this.add // Play button game start from here
+      .image(this.scale.width / 2, 620, "startBtn")
       .setOrigin(0.5)
       .setDisplaySize(100, 100)
-      .setInteractive({ useHandCursor: true });
-
-    startButton.on("pointerdown", () => {
-    // Clean up any existing textures
-    if (this.scene.get("puzzle")) {
+      .setInteractive({ useHandCursor: true })
+      .on("pointerdown", () => {
         for (let i = 0; i < tileCount; i++) {
+          if (this.textures.exists(`tile-${i}`)) {
             this.textures.remove(`tile-${i}`);
+          }
         }
-    }
-    
-    // Reset global arrays
-    tileSprites = [];
-    tiles = [];
-    
-    // Start new game
-    const isFullscreen = document.fullscreenElement !== null;
-    this.scene.start("puzzle", {
-        selectedKey: this.selectedKey,
-        fromFullscreen: isFullscreen
+
+        this.scene.start("puzzle", {
+          selectedKey: this.selectedKey, // pass references selected image to puzzle class
+          fromFullscreen: document.fullscreenElement !== null, // its check is game in fullscreen mode or not 
+        });
+      });
+  }
+
+  updateSelection() { // This function used to add color layer for selected image Using tint
+    this.selectableImages.forEach((item) => {
+      item.image.setTint(item.key === this.selectedKey ? 0xffff00 : 0xffffff);
     });
-});
   }
 }
 
-class FullscreenPrompt extends Phaser.Scene {
+
+
+
+
+class FullscreenPrompt extends Phaser.Scene { //This class used to indicate game in fullscreen mode or not
   constructor() {
     super({ key: "fullscreen" });
   }
 
   create() {
     this.add.rectangle(0, 0, this.scale.width, this.scale.height, 0x000000, 0.85).setOrigin(0);
-    this.add.text(this.scale.width / 2,this.scale.height / 2 - 60,"Please enter fullscreen mode to continue.",{font: "24px Arial",fill: "#ffffff",align: "center",wordWrap: { width: this.scale.width - 100 }}).setOrigin(0.5);
-    const okButton = this.add.text(this.scale.width / 2, this.scale.height / 2 + 20, "OK", {font: "28px Arial",fill: "#ffffff",backgroundColor: "#ff0000",padding: { x: 20, y: 10 },align: "center",}).setOrigin(0.5).setInteractive();
-    
+    this.add.text(
+        this.scale.width / 2,
+        this.scale.height / 2 - 60,
+        "Please enter fullscreen mode to continue.",
+        {
+          font: "24px Arial",
+          fill: "#ffffff",
+          align: "center",
+          wordWrap: { width: this.scale.width - 100 },
+        }).setOrigin(0.5);
+
+    // After click on this button game take a fullscreen 
+    const okButton = this.add.text(this.scale.width / 2, this.scale.height / 2 + 20, "OK", {
+        font: "28px Arial",
+        fill: "#ffffff",
+        backgroundColor: "#ff0000",
+        padding: { x: 20, y: 10 },
+        align: "center",
+      })
+      .setOrigin(0.5)
+      .setInteractive();
+
     okButton.on("pointerdown", () => {
       if (!document.fullscreenElement) {
-        document.body.requestFullscreen().then(() => {
-          this.scene.stop();
-          this.scene.resume("puzzle");
-          const puzzleScene = this.scene.get("puzzle");
-          puzzleScene.isPausedDueToFullscreenExit = false;
-          puzzleScene.fromFullscreen = true;
-        }).catch((err) => {
-          console.error("Error enabling fullscreen:", err);
-        });
+        document.body
+          .requestFullscreen()
+          .then(() => {
+            this.scene.stop();
+            this.scene.resume("puzzle");
+            const puzzleScene = this.scene.get("puzzle");
+            puzzleScene.isPausedDueToFullscreenExit = false;
+            puzzleScene.fromFullscreen = true;
+          })
+          .catch((err) => {
+            console.error("Error enabling fullscreen:", err);
+          });
       } else {
         this.scene.stop();
         this.scene.resume("puzzle");
@@ -128,6 +194,9 @@ class FullscreenPrompt extends Phaser.Scene {
     });
   }
 }
+
+
+
 
 class PuzzleScene extends Phaser.Scene {
   constructor() {
@@ -144,7 +213,6 @@ class PuzzleScene extends Phaser.Scene {
   }
 
   create() {
-    // Clean up any existing popups if restarting
     if (this.popupBg) {
       this.popupBg.destroy();
       this.timeUpText.destroy();
@@ -156,26 +224,27 @@ class PuzzleScene extends Phaser.Scene {
     this.selectedTiles = [];
     this.isPausedDueToFullscreenExit = false;
 
-    this.timeLeft = 60; // Start from 60 seconds
+    this.timeLeft = 60; // Declare the time period of game 
 
     this.timerText = this.add.text(this.scale.width - 200, 20, "Time: 60", {
         fontSize: "24px",
         fontStyle: "bold",
         fill: "#ffffff",
         backgroundColor: "#000000",
-        padding: {x: 20,y: 15,},
-      }).setDepth(100);
+        padding: { x: 20, y: 15 },
+      })
+      .setDepth(100);
 
     this.timeEvent = this.time.addEvent({
-        delay: 1000,
-        callback: () => {
+      delay: 1000,
+      callback: () => {
         this.timeLeft--;
         this.timerText.setText("Time: " + this.timeLeft);
 
         if (this.timeLeft <= 0) {
           this.timeEvent.remove(); // Stop timer
           this.timerText.setText("Time: 0");
-          this.showTimeUpPopup(); // Show time's up popup
+          this.showTimeUpPopup(); // Show times up message 
         }
       },
       callbackScope: this,
@@ -192,28 +261,43 @@ class PuzzleScene extends Phaser.Scene {
       canvas.height = tileHeight;
       const ctx = canvas.getContext("2d");
       const srcTileWidth = fullImage.width / tileCount;
-      ctx.drawImage(fullImage,i * srcTileWidth,0,srcTileWidth,fullImage.height,0,0,tileWidth,tileHeight);
+      ctx.drawImage(fullImage,
+        i * srcTileWidth,
+        0,
+        srcTileWidth,
+        fullImage.height,
+        0,
+        0,
+        tileWidth,
+        tileHeight
+      );
       const tileKey = `tile-${i}`;
       this.textures.addCanvas(tileKey, canvas);
       tiles.push(tileKey);
     }
 
-    Phaser.Utils.Array.Shuffle(tiles);
+    Phaser.Utils.Array.Shuffle(tiles); // Used to Shuffle tiles
 
     const dropZones = [];
     for (let i = 0; i < tileCount; i++) {
-      const zone = this.add.zone(i * tileWidth, 0, tileWidth, tileHeight).setOrigin(0, 0).setRectangleDropZone(tileWidth, tileHeight).setData("index", i);
+      const zone = this.add
+        .zone(i * tileWidth, 0, tileWidth, tileHeight).setOrigin(0, 0)
+        .setRectangleDropZone(tileWidth, tileHeight).setData("index", i);
+
       dropZones.push(zone);
     }
 
     for (let i = 0; i < tiles.length; i++) {
-      const tile = this.add.image(i * tileWidth, 0, tiles[i]).setOrigin(0, 0).setInteractive({ draggable: true });
+      const tile = this.add
+        .image(i * tileWidth, 0, tiles[i])
+        .setOrigin(0, 0)
+        .setInteractive({ draggable: true });
 
       tile.currentIndex = i;
       tile.correctKey = `tile-${i}`;
       tile.selected = false;
 
-      tile.preFX.addColorMatrix().blackWhite();
+      tile.preFX.addColorMatrix().blackWhite(); // make all tiles colorless
       tileSprites.push(tile);
     }
 
@@ -241,24 +325,28 @@ class PuzzleScene extends Phaser.Scene {
       }
     });
 
-    // Show Image button
-    const showImageButton = this.add.text(10, 10, "Preview", {
+    // Preview button 
+    const showImageButton = this.add
+      .text(10, 10, "Preview", {
         font: "20px Arial",
         fill: "#ffffff",
         backgroundColor: "#000000",
         padding: { x: 10, y: 5 },
         align: "center",
-      }).setInteractive().setDepth(1000);
+      })
+      .setInteractive()
+      .setDepth(1000);
 
     showImageButton.on("pointerdown", () => {
       this.showOriginalImage();
     });
 
-    // Only launch fullscreen prompt if not already in fullscreen
+    // Only launch fullscreen message if not already in fullscreen
     if (!this.fromFullscreen) {
       this.scene.launch("fullscreen");
     }
 
+    // If player start the game and if not in fullscreen then it will be show fullscreen msg
     document.addEventListener("fullscreenchange", () => {
       if (!document.fullscreenElement && !this.scene.isPaused("fullscreen")) {
         this.isPausedDueToFullscreenExit = true;
@@ -268,72 +356,51 @@ class PuzzleScene extends Phaser.Scene {
     });
   }
 
+  // If player not able to complete the game given time then it will be show try again 
+  // and game restart with same selected image
   showTimeUpPopup() {
-    // Pause the timer and any other game elements that should stop
     this.timeEvent.remove();
-    
-    // Create semi-transparent overlay
-    this.popupBg = this.add.rectangle(
-        this.scale.width / 2,
-        this.scale.height / 2,
-        400,
-        200,
-        0x000000,
-        0.7
-    ).setDepth(200).setInteractive();
 
-    // "Time's up!" text
-    this.timeUpText = this.add.text(
-        this.scale.width / 2,
-        this.scale.height / 2 - 40,
-        "Time's up!",
-        {
-            fontSize: "32px",
-            color: "#ffffff",
-            fontStyle: "bold",
-            align: "center",
-        }
-    ).setOrigin(0.5).setDepth(201);
+    this.popupBg = this.add.rectangle(this.scale.width / 2,this.scale.height / 2,400,200,0x000000,0.7)
+    .setDepth(200).setInteractive();
 
-    // Try Again button
-    this.tryAgainBtn = this.add.text(
-        this.scale.width / 2,
-        this.scale.height / 2 + 20,
-        "Try Again",
-        {
-            fontSize: "24px",
-            backgroundColor: "#ffffff",
-            color: "#000000",
-            padding: { x: 15, y: 8 },
-            fontStyle: "bold",
-        }
-    )
-    .setOrigin(0.5)
-    .setDepth(201)
-    .setInteractive({ useHandCursor: true })
-    .on("pointerdown", () => {
+    this.timeUpText = this.add.text(this.scale.width / 2, this.scale.height / 2 - 40, "Time's up!", {
+        fontSize: "32px",
+        color: "#ffffff",
+        fontStyle: "bold",
+        align: "center",
+      }).setOrigin(0.5).setDepth(201);
+
+    this.tryAgainBtn = this.add.text(this.scale.width / 2, this.scale.height / 2 + 20, "Try Again", {
+        fontSize: "24px",
+        backgroundColor: "#ffffff",
+        color: "#000000",
+        padding: { x: 15, y: 8 },
+        fontStyle: "bold",
+      }).setOrigin(0.5).setDepth(201).setInteractive({ useHandCursor: true })
+      .on("pointerdown", () => {
         this.popupBg.destroy();
         this.timeUpText.destroy();
         this.tryAgainBtn.destroy();
-        this.scene.restart({ 
-            selectedKey: this.selectedKey,
-            fromFullscreen: document.fullscreenElement !== null
+        this.scene.restart({
+          selectedKey: this.selectedKey,
+          fromFullscreen: document.fullscreenElement !== null,
         });
-    });
+      });
 
-    tileSprites.forEach(tile => {
-        tile.disableInteractive();
+    tileSprites.forEach((tile) => {
+      tile.disableInteractive();
     });
 
     this.tweens.pauseAll();
   }
 
+  // if Player not in fullscreen mode then it will be show plz move in fullscreen mode 
   pauseGame() {
     this.isPausedDueToResize = true;
     this.scene.pause();
 
-    this.pauseText = this.add
-      .text(
+    this.pauseText = this.add.text(
         this.scale.width / 2,
         this.scale.height / 2,
         "Please maximize the window to continue.",
@@ -344,9 +411,7 @@ class PuzzleScene extends Phaser.Scene {
           padding: { x: 20, y: 20 },
           align: "center",
         }
-      )
-      .setOrigin(0.5)
-      .setDepth(100);
+      ).setOrigin(0.5).setDepth(100);
 
     this.okButton = this.add
       .text(this.scale.width / 2, this.scale.height / 2 + 60, "OK", {
@@ -355,16 +420,14 @@ class PuzzleScene extends Phaser.Scene {
         backgroundColor: "#00bfff",
         padding: { x: 20, y: 10 },
         align: "center",
-      })
-      .setOrigin(0.5)
-      .setInteractive({ useHandCursor: true })
-      .setDepth(100);
+      }).setOrigin(0.5).setInteractive({ useHandCursor: true }).setDepth(100);
 
     this.okButton.on("pointerdown", () => {
       this.handleResize();
     });
   }
 
+  // Here Resume the game and player can restart to play game where it were paused
   resumeGame() {
     this.isPausedDueToResize = false;
     this.pauseText.destroy();
@@ -372,11 +435,13 @@ class PuzzleScene extends Phaser.Scene {
     this.scene.resume();
   }
 
+  // This is function used to swap the 2 tiles from source to target
   swapTiles(tile1, tile2) {
     const tempIndex = tile1.currentIndex;
     tile1.currentIndex = tile2.currentIndex;
     tile2.currentIndex = tempIndex;
 
+    // This is used to smooth animation during the swapping tiles
     this.tweens.add({
       targets: tile1,
       x: tile1.currentIndex * tileWidth,
@@ -396,6 +461,9 @@ class PuzzleScene extends Phaser.Scene {
     this.checkWin();
   }
 
+
+  // If player match the tile properly then tiles take their previous color ,
+  // Remove the blackWhite color from tiles
   checkWin() {
     const allCorrect = tileSprites.every(
       (tile) => tile.texture.key === `tile-${tile.currentIndex}`
@@ -406,8 +474,9 @@ class PuzzleScene extends Phaser.Scene {
     }
   }
 
+  // After arrange the all tile of image properly then ask the question to player
   askQuestion() {
-  
+    // there is is specific question for each image 
     let question = "";
     if (this.selectedKey === "bg1")
       question = "Where is the bucket in the image?";
@@ -422,15 +491,13 @@ class PuzzleScene extends Phaser.Scene {
     else if (this.selectedKey === "bg6")
       question = "Where is the basketball in the image?";
 
-    this.add
-      .text(this.scale.width / 2, 25, question, {
+    this.add.text(this.scale.width / 2, 25, question, {
         font: "32px Arial",
         fill: "#ffffff",
         backgroundColor: "#000000",
         padding: { x: 10, y: 10 },
         align: "center",
-      })
-      .setOrigin(0.5, 0);
+      }).setOrigin(0.5, 0);
 
     tileSprites.forEach((tile) => {
       tile.setInteractive();
@@ -464,6 +531,7 @@ class PuzzleScene extends Phaser.Scene {
     });
   }
 
+  // Show the messgae like correct you win or Try again
   showMessage(text, color) {
     const message = this.add
       .text(this.scale.width / 2, this.scale.height / 3, text, {
@@ -478,6 +546,7 @@ class PuzzleScene extends Phaser.Scene {
     this.time.delayedCall(2000, () => message.destroy());
   }
 
+  // Submit the answer to verify to player can win or not
   submitAnswer() {
     if (this.selectedTiles.length === 0) {
       this.showMessage("Please select at least one tile!", "#ff0000");
@@ -485,6 +554,7 @@ class PuzzleScene extends Phaser.Scene {
     }
 
     let correctTiles = [];
+    // This is the answer key for perticular image
     if (this.selectedKey === "bg1") correctTiles = [5];
     else if (this.selectedKey === "bg2") correctTiles = [4, 5];
     else if (this.selectedKey === "bg3") correctTiles = [2, 3, 4];
@@ -496,64 +566,56 @@ class PuzzleScene extends Phaser.Scene {
       this.selectedTiles.length === correctTiles.length &&
       this.selectedTiles.every((tile) => correctTiles.includes(tile));
 
+    // If all selected tiles match with answer key then show win otherwise try again...
     if (isCorrect) {
       this.showMessage("Correct! You Win!", "#00ff00");
-      // this.timerText.destroy()
       setTimeout(() => this.showBackButton(), 1500);
     } else {
       this.showMessage("Wrong! Please Try Again....!", "#ff0000");
     }
   }
 
+  // Remove all tile textures , stop current scene and restart the game navigate to AssetsLoad
   showBackButton() {
-    this.add.image(this.scale.width / 2, this.scale.height / 2, "back")
-        .setOrigin(0.5)
-        .setDisplaySize(100, 100)
-        .setInteractive({ useHandCursor: true })
-        .on("pointerdown", () => {
-            // Remove all tile textures from cache
-            for (let i = 0; i < tileCount; i++) {
-                this.textures.remove(`tile-${i}`);
-            }
-            
-            // Clear global arrays
-            tileSprites = [];
-            tiles = [];
-            
-            // Stop current scene and start BootScene
-            this.scene.stop();
-            this.scene.start("BootScene");
-        });
-}
+    this.add
+      .image(this.scale.width / 2, this.scale.height / 2, "back")
+      .setOrigin(0.5)
+      .setDisplaySize(100, 100)
+      .setInteractive({ useHandCursor: true })
+      .on("pointerdown", () => {
+        for (let i = 0; i < tileCount; i++) {
+          this.textures.remove(`tile-${i}`);
+        }
 
+        tileSprites = [];
+        tiles = [];
+
+        this.scene.stop();
+        this.scene.start("AssetsLoad");
+      });
+  }
+
+
+  // Add overlay on game then  show original image and set cross button to exit this functionlity.
   showOriginalImage() {
     tileSprites.forEach((tile) => tile.disableInteractive());
 
     const imageWidth = this.scale.width * 0.6;
     const imageHeight = this.scale.height * 0.6;
-    const overlay = this.add
-      .rectangle(0, 0, this.scale.width, this.scale.height, 0x000000, 0.7)
-      .setOrigin(0)
-      .setDepth(10)
-      .setInteractive();
-    const preview = this.add
-      .image(this.scale.width / 2, this.scale.height / 2, this.selectedKey)
-      .setDisplaySize(imageWidth, imageHeight)
-      .setOrigin(0.5)
-      .setDepth(1001);
+
+    const overlay = this.add.rectangle(0, 0, this.scale.width, this.scale.height, 0x000000, 0.7)
+      .setOrigin(0).setDepth(10).setInteractive();
+
+    const preview = this.add.image(this.scale.width / 2, this.scale.height / 2, this.selectedKey)
+      .setDisplaySize(imageWidth, imageHeight).setOrigin(0.5).setDepth(1001);
     const closeX = preview.x + imageWidth / 2 - 20;
     const closeY = preview.y - imageHeight / 2 + 20;
 
-    const closeButton = this.add
-      .text(closeX, closeY, "X", {
-        font: "28px Arial",
-        fill: "#ffffff",
-        backgroundColor: "#ff0000",
-        padding: { x: 10, y: 5 },
-      })
-      .setOrigin(0.5)
-      .setDepth(10000)
-      .setInteractive();
+    const closeButton = this.add.text(closeX, closeY, "X", {
+      font: "28px Arial",
+      fill: "#ffffff",
+      backgroundColor: "#ff0000",
+      padding: { x: 10, y: 5 },}).setOrigin(0.5).setDepth(10000).setInteractive();
 
     this.children.bringToTop(closeButton);
 
