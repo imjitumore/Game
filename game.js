@@ -369,7 +369,7 @@ class PuzzleScene extends Phaser.Scene {
     this.popupBg = this.add.rectangle(this.scale.width / 2,this.scale.height / 2,400,200,0x000000,0.7)
     .setDepth(200).setInteractive();
 
-    this.timeUpText = this.add.text(this.scale.width / 2, this.scale.height / 2 - 40, "Time's up!", {
+    this.timeUpText = this.add.text(this.scale.width / 2, this.scale.height / 2 - 40, "Oops Time's up!", {
         fontSize: "32px",
         color: "#ffffff",
         fontStyle: "bold",
