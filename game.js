@@ -360,7 +360,6 @@ class PuzzleScene extends Phaser.Scene {
   // and game restart with same selected image
   showTimeUpPopup() {
     this.timeEvent.remove();
-    this.submitAnswer.destroy()
 
     this.popupBg = this.add.rectangle(this.scale.width / 2,this.scale.height / 2,400,200,0x000000,0.7)
     .setDepth(200).setInteractive();
