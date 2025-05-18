@@ -359,6 +359,11 @@ class PuzzleScene extends Phaser.Scene {
   // If player not able to complete the game given time then it will be show try again 
   // and game restart with same selected image
   showTimeUpPopup() {
+    if (this.submitButton) {
+      this.submitButton.destroy();
+      this.submitButton = null;
+    }
+
     this.timeEvent.remove();
 
     this.popupBg = this.add.rectangle(this.scale.width / 2,this.scale.height / 2,400,200,0x000000,0.7)
