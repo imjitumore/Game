@@ -17,7 +17,7 @@ class AssetsLoad extends Phaser.Scene {
     this.load.image("bg5", "/assets/BG_05.png");
     this.load.image("bg6", "/assets/BG_06.jpg");
     this.load.image("background", "./assets/start.jpg");
-    this.load.image("back", "./assets/bk.jpg");
+    this.load.image("back", "./assets/back.png");
     this.load.image("startBtn", "./assets/startBtn.png");
   }
 
@@ -538,18 +538,40 @@ class PuzzleScene extends Phaser.Scene {
 
   // Show the messgae like correct you win or Try again
   showMessage(text, color) {
-    const message = this.add
-      .text(this.scale.width / 2, this.scale.height / 3, text, {
-        font: "28px Arial",
-        fill: "#ffffff",
-        backgroundColor: color,
-        padding: { x: 15, y: 10 },
-        align: "center",
-      })
-      .setOrigin(0.5);
+    if (this.message) {
+      this.message.destroy();
+    }
+     
+  const isCorrect = text.toLowerCase().includes("correct");
 
-    this.time.delayedCall(2000, () => message.destroy());
-  }
+  this.message = this.add.text(this.scale.width / 2,this.scale.height / 3 - 100,text,
+  {
+    font: "28px Arial",
+    fill: isCorrect ? "#000000" : "#ffffff", 
+    backgroundColor: isCorrect ? "#00ff00" : color, 
+    padding: { x: 20, y: 12 },
+    align: "center",
+    }).setOrigin(0.5);
+
+    this.message.setAlpha(0);// Start slightly above
+
+    if (isCorrect) {
+      this.tweens.add({targets: this.message,y: this.scale.height / 3 - 100,alpha: 1,duration: 700,ease: 'Bounce.out',});
+    } else {
+      this.tweens.add({targets: this.message,y: this.scale.height / 3 - 100,
+        alpha: 1,
+        duration: 400,
+        ease: 'Cubic.easeOut',
+        onComplete: () => {
+        this.tweens.add({
+        targets: this.message,x: this.scale.width / 2 + 10,duration: 80,yoyo: true,repeat: 4,ease: 'Sine.easeInOut',});
+        }});
+    }
+
+    this.time.delayedCall(2000, () => {
+      this.message.destroy()
+    });
+}
 
   // Submit the answer to verify to player can win or not
   submitAnswer() {
