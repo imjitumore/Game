@@ -32,9 +32,9 @@ class AssetsLoad extends Phaser.Scene {
 
     //
     const bg1 = this.add
-      .image(this.scale.width / 2 - 420, 100, "bg1")
+      .image(this.scale.width / 2 - 400, 80, "bg1")
       .setOrigin(0.5, 0)
-      .setDisplaySize(350, 200)
+      .setDisplaySize(330, 180)
       .setInteractive({ useHandCursor: true })
       .on("pointerdown", () => {
         this.selectedKey = "bg1";
@@ -42,9 +42,9 @@ class AssetsLoad extends Phaser.Scene {
       });
 
     const bg2 = this.add
-      .image(this.scale.width / 2, 100, "bg2")
+      .image(this.scale.width / 2, 80, "bg2")
       .setOrigin(0.5, 0)
-      .setDisplaySize(350, 200)
+      .setDisplaySize(330, 180)
       .setInteractive({ useHandCursor: true })
       .on("pointerdown", () => {
         this.selectedKey = "bg2";
@@ -52,9 +52,9 @@ class AssetsLoad extends Phaser.Scene {
       });
 
     const bg3 = this.add
-      .image(this.scale.width / 2 + 420, 100, "bg3")
+      .image(this.scale.width / 2 + 400, 80, "bg3")
       .setOrigin(0.5, 0)
-      .setDisplaySize(350, 200)
+      .setDisplaySize(330, 180)
       .setInteractive({ useHandCursor: true })
       .on("pointerdown", () => {
         this.selectedKey = "bg3";
@@ -62,9 +62,9 @@ class AssetsLoad extends Phaser.Scene {
       });
 
     const bg4 = this.add
-      .image(this.scale.width / 2 - 420, 330, "bg4")
+      .image(this.scale.width / 2 - 400, 300, "bg4")
       .setOrigin(0.5, 0)
-      .setDisplaySize(350, 200)
+      .setDisplaySize(330, 200)
       .setInteractive({ useHandCursor: true })
       .on("pointerdown", () => {
         this.selectedKey = "bg4";
@@ -72,9 +72,9 @@ class AssetsLoad extends Phaser.Scene {
       });
 
     const bg5 = this.add
-      .image(this.scale.width / 2, 330, "bg5")
+      .image(this.scale.width / 2, 300, "bg5")
       .setOrigin(0.5, 0)
-      .setDisplaySize(350, 200)
+      .setDisplaySize(330, 200)
       .setInteractive({ useHandCursor: true })
       .on("pointerdown", () => {
         this.selectedKey = "bg5";
@@ -82,9 +82,9 @@ class AssetsLoad extends Phaser.Scene {
       });
 
     const bg6 = this.add
-      .image(this.scale.width / 2 + 420, 330, "bg6")
+      .image(this.scale.width / 2 + 400, 300, "bg6")
       .setOrigin(0.5, 0)
-      .setDisplaySize(350, 200)
+      .setDisplaySize(330, 200)
       .setInteractive({ useHandCursor: true })
       .on("pointerdown", () => {
         this.selectedKey = "bg6";
@@ -112,9 +112,9 @@ class AssetsLoad extends Phaser.Scene {
 
    
     const startButton = this.add // Play button game start from here
-      .image(this.scale.width / 2, 620, "startBtn")
+      .image(this.scale.width / 2, 570, "startBtn")
       .setOrigin(0.5)
-      .setDisplaySize(100, 100)
+      .setDisplaySize(80, 80)
       .setInteractive({ useHandCursor: true })
       .on("pointerdown", () => {
         for (let i = 0; i < tileCount; i++) {
@@ -360,6 +360,7 @@ class PuzzleScene extends Phaser.Scene {
   // and game restart with same selected image
   showTimeUpPopup() {
     this.timeEvent.remove();
+    this.submitAnswer.destroy()
 
     this.popupBg = this.add.rectangle(this.scale.width / 2,this.scale.height / 2,400,200,0x000000,0.7)
     .setDepth(200).setInteractive();
