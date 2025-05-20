@@ -119,7 +119,9 @@ class AssetsLoad extends Phaser.Scene {
 
 
 
-class FullscreenPrompt extends Phaser.Scene { //This class used to indicate game in fullscreen mode or not
+class FullscreenPrompt extends Phaser.Scene { 
+  //This class used to indicate game in fullscreen mode or not
+  //if player not in fullscreen mode then it will be show message like plz enter to fullscreen mode
   constructor() {
     super({ key: "fullscreen" });
   }
@@ -145,29 +147,17 @@ class FullscreenPrompt extends Phaser.Scene { //This class used to indicate game
       }).setOrigin(0.5).setInteractive({ useHandCursor: true });
 
     okButton.on("pointerdown", () => {
-      if (!document.fullscreenElement) {
-        document.body.requestFullscreen().then(() => {
-            this.scene.stop();
-            this.scene.resume("puzzle");
-            const puzzleScene = this.scene.get("puzzle");
-            puzzleScene.isPausedDueToFullscreenExit = false;
-            puzzleScene.fromFullscreen = true;
-          }).catch((err) => {
-            console.error("Error enabling fullscreen:", err);
-          });
-      } else {
-        this.scene.stop();
-        this.scene.resume("puzzle");
-        const puzzleScene = this.scene.get("puzzle");
-        puzzleScene.isPausedDueToFullscreenExit = false;
-        puzzleScene.fromFullscreen = true;
-      }
+    if (!this.scale.isFullscreen) {
+      this.scale.startFullscreen();
+    }
+      this.scene.stop();
+      this.scene.resume("puzzle");
+      const puzzleScene = this.scene.get("puzzle");
+      puzzleScene.isPausedDueToFullscreenExit = false;
+      puzzleScene.fromFullscreen = true;
     });
   }
 }
-
-
-
 
 class PuzzleScene extends Phaser.Scene {
   constructor() {
@@ -222,6 +212,8 @@ class PuzzleScene extends Phaser.Scene {
       callbackScope: this,
       loop: true,
     });
+
+    this.scale.on("resize", this.handleResize, this);
 
     //Pass a selected images to texture and cuts the given image in number of tile count
     const fullImage = this.textures.get(this.selectedKey).getSourceImage();
@@ -337,6 +329,69 @@ class PuzzleScene extends Phaser.Scene {
     });
   }
 
+  // Recalculate new tile sizes when game move in fullscreen mode
+  handleResize(gameSize) {
+  const width = gameSize.width;
+  const height = gameSize.height;
+  // console.log(height)
+  // console.log(width)
+
+  tileWidth = width / tileCount;
+  tileHeight = height;
+
+  // Remove existing tiles
+  tileSprites.forEach(tile => tile.destroy());
+  tileSprites = [];
+
+  tiles.forEach(key => {
+    if (this.textures.exists(key)) {
+      this.textures.remove(key);
+    }
+  });
+  tiles = [];
+
+  this.scale.on("resize", this.handleResize, this);
+
+  const fullImage = this.textures.get(this.selectedKey).getSourceImage();
+  const srcTileWidth = fullImage.width / tileCount;
+
+  for (let i = 0; i < tileCount; i++) {
+    const canvas = document.createElement("canvas");
+    canvas.width = tileWidth;
+    canvas.height = tileHeight;
+    const ctx = canvas.getContext("2d");
+
+    ctx.drawImage(fullImage,
+      i * srcTileWidth,
+      0,
+      srcTileWidth,
+      fullImage.height,
+      0,
+      0,
+      tileWidth,
+      tileHeight
+    );
+
+    const tileKey = `tile-${i}`;
+    this.textures.addCanvas(tileKey, canvas);
+    tiles.push(tileKey);
+  }
+
+  Phaser.Utils.Array.Shuffle(tiles);
+
+  for (let i = 0; i < tiles.length; i++) {
+    const tile = this.add.image(i * tileWidth, 0, tiles[i]).setOrigin(0, 0)
+      .setInteractive({ draggable: true });
+
+    tile.currentIndex = i;
+    tile.correctKey = `tile-${i}`;
+    tile.selected = false;
+
+    tile.preFX.addColorMatrix().blackWhite();
+    tileSprites.push(tile);
+  }
+}
+
   // If player not able to complete the game given timeline then it will be show try again 
   // and game restart with same selected image
   showTimeUpPopup() {
@@ -345,7 +400,9 @@ class PuzzleScene extends Phaser.Scene {
       this.submitButton = null;
     }
 
-    this.timeEvent.remove();
+    if (this.timeEvent) {
+      this.timeEvent.remove();
+    }
 
     this.popupBg = this.add.rectangle(this.scale.width / 2,this.scale.height / 2,400,200,0x000000,0.7)
     .setDepth(200).setInteractive();
@@ -463,6 +520,8 @@ class PuzzleScene extends Phaser.Scene {
     // console.log(allCorrect)
     if (allCorrect) {
       tileSprites.forEach((tile) => tile.clearFX());
+      this.timeEvent.remove(); // Add this line to stop the timer
+      this.timerText.setText("Time: " + this.timeLeft);
       this.askQuestion();
     }
   }
@@ -611,6 +670,11 @@ class PuzzleScene extends Phaser.Scene {
 
   // Remove all tile textures , stop current scene and again start the game and navigate to AssetsLoad
   showBackButton() {
+
+    if (this.timeEvent) {
+      this.timeEvent.remove()
+    }
+
     this.add.image(this.scale.width / 2, this.scale.height / 2, "back").setOrigin(0.5)
       .setDisplaySize(100, 100).setInteractive({ useHandCursor: true })
       .on("pointerdown", () => {
@@ -621,6 +685,10 @@ class PuzzleScene extends Phaser.Scene {
 
         tileSprites = [];
         tiles = [];
+
+        if (this.timeEvent) {
+          this.timeEvent.remove();
+        }
 
         this.scene.stop();
         this.scene.start("AssetsLoad");
